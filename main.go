@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/url"
 	"os"
@@ -26,8 +27,15 @@ func main() {
 
 	client := anaconda.NewTwitterApi(twitter.AccessApiKey, twitter.AccessSecretKey)
 	v := url.Values{}
-	v.Set("count", "30")
+	v.Set("count", "50")
 	next_cursor := "-1"
+
+	file, err := os.OpenFile("data.csv", os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return
+	}
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
 
 	// 全フォロワーサーチ
 	for {
@@ -37,7 +45,7 @@ func main() {
 		fmt.Println(err)
 
 		for _, usr := range c.Users {
-			fmt.Println(usr.Name)
+			writer.Write([]string{usr.IdStr, usr.Name, usr.ScreenName})
 		}
 
 		next_cursor = c.Next_cursor_str
