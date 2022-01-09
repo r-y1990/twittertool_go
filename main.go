@@ -25,11 +25,15 @@ func main() {
 	anaconda.SetConsumerKey(twitter.ConsumerApiKey)
 	anaconda.SetConsumerSecret(twitter.ConsumerSecretKey)
 
+	// Twitterクライアント
 	client := anaconda.NewTwitterApi(twitter.AccessApiKey, twitter.AccessSecretKey)
 	v := url.Values{}
 	v.Set("count", "50")
 	next_cursor := "-1"
 
+	// CSV書き込み用
+	// TODO ファイルに日付情報を入れて一旦置く
+	// TODO DBにする
 	file, err := os.OpenFile("data.csv", os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		return
